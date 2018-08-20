@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">DaggerAndroidMVVM</string>
+    <string name="greeting_error">Unable to load greeting.</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="title_search">Search</string>
+    <string name="title_stored">Stored</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="all_add">Add</string>
+    <string name="all_remove">Remove</string>
+    <string name="title_location_permission">Needs Permission</string>
+    <string name="text_location_permission">Needs Permission</string>
+    <string name="ok">Ok</string>
+</resources>
