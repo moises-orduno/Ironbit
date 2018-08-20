@@ -10,15 +10,15 @@ import javax.inject.Inject;
 import io.reactivex.Single;
 
 public class LoadCommonVenueUseCase implements LoadVenueUseCase {
-    private final VenueRepository greetingRepository;
+    private final VenueRepository mRepository;
 
     @Inject
-    public LoadCommonVenueUseCase(VenueRepository greetingRepository) {
-        this.greetingRepository = greetingRepository;
+    public LoadCommonVenueUseCase(VenueRepository repository) {
+        mRepository = repository;
     }
 
     @Override
     public Single<FoursquareResponse> execute(FoursquareRequest foursquareRequest) {
-        return greetingRepository.getGreeting(foursquareRequest);
+        return mRepository.getGreeting(foursquareRequest);
     }
 }
