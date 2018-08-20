@@ -9,7 +9,7 @@ import io.reactivex.Single;
 
 public class VenueRepository {
 
-    public Single<FoursquareResponse> getGreeting(FoursquareRequest foursquareRequest) {
+    public Single<FoursquareResponse> getVenues(FoursquareRequest foursquareRequest) {
         return FoursquareService.getInstance().venues(foursquareRequest);
     }
 }
