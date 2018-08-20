@@ -19,6 +19,6 @@ public class LoadCommonVenueUseCase implements LoadVenueUseCase {
 
     @Override
     public Single<FoursquareResponse> execute(FoursquareRequest foursquareRequest) {
-        return mRepository.getGreeting(foursquareRequest);
+        return mRepository.getVenues(foursquareRequest);
     }
 }
