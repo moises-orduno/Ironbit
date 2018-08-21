@@ -22,11 +22,7 @@ public class AppModule {
         return application.getApplicationContext();
     }
 
-    @Singleton
-    @Provides
-    VenueRepository provideCommonHelloService() {
-        return new VenueRepository();
-    }
+
 
 
 }

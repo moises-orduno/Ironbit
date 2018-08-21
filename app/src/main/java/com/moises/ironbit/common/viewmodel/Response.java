@@ -5,7 +5,8 @@ import android.support.annotation.Nullable;
 
 
 import com.moises.ironbit.common.dao.LocalVenue;
-import com.moises.ironbit.common.model.FoursquareResponse;
+import com.moises.ironbit.common.model.venue.FoursquareVenueResponse;
+import com.moises.ironbit.common.model.venues.FoursquareResponse;
 
 import java.util.List;
 
@@ -18,36 +19,45 @@ public class Response {
 
     public final Status status;
 
-    @Nullable
-    public final FoursquareResponse data;
+    public FoursquareResponse data;
 
-    @Nullable
-    public final Throwable error;
+    public FoursquareVenueResponse dataVenue;
 
-    private Response(Status status, @Nullable FoursquareResponse data, @Nullable Throwable error) {
+    public Throwable error;
+
+    private Response(Status status, FoursquareResponse data) {
         this.status = status;
         this.data = data;
+    }
+
+    private Response(Status status, FoursquareVenueResponse data) {
+        this.status = status;
+        this.dataVenue = data;
+    }
+
+    private Response(Status status) {
+        this.status = status;
+    }
+
+    private Response(Status status, Throwable error) {
+        this.status = status;
         this.error = error;
     }
 
+
     public static Response loading() {
-        return new Response(LOADING, null, null);
+        return new Response(LOADING);
     }
 
     public static Response success(@NonNull FoursquareResponse data) {
-        return new Response(SUCCESS, data, null);
+        return new Response(SUCCESS, data);
     }
 
-    public static Response success(@NonNull Boolean data) {
-        return new Response(SUCCESS, null, null);
+    public static Response success(@NonNull FoursquareVenueResponse data) {
+        return new Response(SUCCESS, data);
     }
-
-    public static Response success(@NonNull List<LocalVenue> data) {
-        return new Response(SUCCESS, null, null);
-    }
-
 
     public static Response error(@NonNull Throwable error) {
-        return new Response(ERROR, null, error);
+        return new Response(ERROR, error);
     }
 }

@@ -5,7 +5,7 @@ import android.arch.lifecycle.ViewModel;
 
 import com.moises.ironbit.common.dao.LocalVenue;
 import com.moises.ironbit.common.domain.interactors.LoadCommonLocalVenueUseCase;
-import com.moises.ironbit.common.model.Venue;
+import com.moises.ironbit.common.model.venues.Venue;
 import com.moises.ironbit.common.viewmodel.LocalResponse;
 import com.moises.ironbit.rx.SchedulersFacade;
 

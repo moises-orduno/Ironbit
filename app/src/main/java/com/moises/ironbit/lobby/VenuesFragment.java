@@ -19,8 +19,8 @@ import android.widget.Toast;
 import com.google.android.gms.location.DetectedActivity;
 import com.moises.ironbit.R;
 import com.moises.ironbit.common.dao.LocalVenue;
-import com.moises.ironbit.common.model.FoursquareResponse;
-import com.moises.ironbit.common.model.Venue;
+import com.moises.ironbit.common.model.venues.FoursquareResponse;
+import com.moises.ironbit.common.model.venues.Venue;
 import com.moises.ironbit.common.viewmodel.LocalResponse;
 import com.moises.ironbit.common.viewmodel.Response;
 import com.moises.ironbit.lobby.viewmodel.LocalVenueViewModel;
@@ -55,23 +55,26 @@ public class VenuesFragment extends Fragment implements VenuesRecyclerViewAdapte
 
     @BindView(R.id.list)
     RecyclerView mRecyclerViewList;
-    private VenueViewModel viewModel;
+    private VenueViewModel mViewModel;
 
     @Inject
     LocalVenueViewModelFactory mLocalViewModelFactory;
+
     private LocalVenueViewModel mLocalViewModel;
-    private List<LocalVenue> mLocalVenues=new ArrayList<>();
+    private List<LocalVenue> mLocalVenues = new ArrayList<>();
+    private OnListFragmentInteractionListener mListener;
 
     public VenuesFragment() {
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static VenuesFragment newInstance() {
+    public static VenuesFragment newInstance(OnListFragmentInteractionListener listener) {
         VenuesFragment fragment = new VenuesFragment();
         Bundle args = new Bundle();
 
         fragment.setArguments(args);
+        fragment.setOnListFragmentInteractionListener(listener);
         return fragment;
     }
 
@@ -79,9 +82,9 @@ public class VenuesFragment extends Fragment implements VenuesRecyclerViewAdapte
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        viewModel = ViewModelProviders.of(getActivity(), mViewModelFactory).get(VenueViewModel.class);
+        mViewModel = ViewModelProviders.of(getActivity(), mViewModelFactory).get(VenueViewModel.class);
 
-        viewModel.response().observe(this, new Observer<Response>() {
+        mViewModel.response().observe(this, new Observer<Response>() {
             @Override
             public void onChanged(@Nullable Response response) {
                 VenuesFragment.this.processResponse(response);
@@ -148,17 +151,14 @@ public class VenuesFragment extends Fragment implements VenuesRecyclerViewAdapte
                 return null;
             }
         }))
-                .start(new OnLocationUpdatedListener() {
-                    @Override
-                    public void onLocationUpdated(Location location) {
-                        Log.d(TAG, "onLocationUpdated: "+location.getLatitude()+" "+location.getLongitude());
+                .start(location -> {
+                    Log.d(TAG, "onLocationUpdated: " + location.getLatitude() + " " + location.getLongitude());
 
-                        viewModel.loadVenues(location.getLatitude(),location.getLongitude());
-                    }
+                    mViewModel.loadVenues(location.getLatitude(), location.getLongitude());
                 });
         mProgressBar.setVisibility(View.GONE);
 
-        mLocalVenues=localVenues;
+        mLocalVenues = localVenues;
 
     }
 
@@ -183,11 +183,12 @@ public class VenuesFragment extends Fragment implements VenuesRecyclerViewAdapte
         mProgressBar.setVisibility(View.VISIBLE);
     }
 
-    private void renderDataState(FoursquareResponse greeting) {
+    private void renderDataState(FoursquareResponse foursquareResponse) {
 
-        mProgressBar.setVisibility(View.GONE);
-        mRecyclerViewList.setAdapter(new VenuesRecyclerViewAdapter(greeting.getResponse().getGroups().get(0).getItems(),mLocalVenues, this));
-
+        if (foursquareResponse != null) {
+            mProgressBar.setVisibility(View.GONE);
+            mRecyclerViewList.setAdapter(new VenuesRecyclerViewAdapter(foursquareResponse.getResponse().getGroups().get(0).getItems(), mLocalVenues, this));
+        }
     }
 
     private void renderErrorState(Throwable throwable) {
@@ -224,12 +225,27 @@ public class VenuesFragment extends Fragment implements VenuesRecyclerViewAdapte
 
 
     @Override
-    public void onListFragmentInteraction(Venue item) {
+    public void onListFragmentInteractionSaveValue(Venue item) {
 
-        if(!((VenuesRecyclerViewAdapter)mRecyclerViewList.getAdapter()).validateLocal(item.getId())) {
+        if (!((VenuesRecyclerViewAdapter) mRecyclerViewList.getAdapter()).validateLocal(item.getId())) {
             mLocalViewModel.insertLocalVenue(item);
-        }else {
-            mLocalViewModel.deleteLocalVenue(((VenuesRecyclerViewAdapter)mRecyclerViewList.getAdapter()).getLocalVenue(item.getId()));
+        } else {
+            mLocalViewModel.deleteLocalVenue(((VenuesRecyclerViewAdapter) mRecyclerViewList.getAdapter()).getLocalVenue(item.getId()));
         }
+    }
+
+    @Override
+    public void onListFragmentInteractionGoToVenue(Venue item) {
+        if (mListener != null) mListener.onListFragmentInteractionGoToVenue(item);
+    }
+
+    public void setOnListFragmentInteractionListener(OnListFragmentInteractionListener onListFragmentInteractionListener) {
+        this.mListener = onListFragmentInteractionListener;
+    }
+
+
+    public interface OnListFragmentInteractionListener {
+
+        void onListFragmentInteractionGoToVenue(Venue item);
     }
 }

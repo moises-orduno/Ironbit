@@ -2,8 +2,10 @@ package com.moises.ironbit.common.domain.interactors;
 
 
 import com.moises.ironbit.common.domain.model.VenueRepository;
-import com.moises.ironbit.common.model.FoursquareRequest;
-import com.moises.ironbit.common.model.FoursquareResponse;
+import com.moises.ironbit.common.model.venue.FoursquareVenueRequest;
+import com.moises.ironbit.common.model.venue.FoursquareVenueResponse;
+import com.moises.ironbit.common.model.venues.FoursquareRequest;
+import com.moises.ironbit.common.model.venues.FoursquareResponse;
 
 import javax.inject.Inject;
 
@@ -20,5 +22,10 @@ public class LoadCommonVenueUseCase implements LoadVenueUseCase {
     @Override
     public Single<FoursquareResponse> execute(FoursquareRequest foursquareRequest) {
         return mRepository.getVenues(foursquareRequest);
+    }
+
+    @Override
+    public Single<FoursquareVenueResponse> executeById(FoursquareVenueRequest foursquareRequest) {
+        return mRepository.getVenueById(foursquareRequest);
     }
 }

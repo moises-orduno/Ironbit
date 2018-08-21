@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 import com.moises.ironbit.R;
 import com.moises.ironbit.common.dao.LocalVenue;
-import com.moises.ironbit.common.model.Item;
-import com.moises.ironbit.common.model.Venue;
+import com.moises.ironbit.common.model.venues.Item;
+import com.moises.ironbit.common.model.venues.Venue;
 
 import java.util.List;
 
@@ -43,10 +43,17 @@ public class VenuesRecyclerViewAdapter extends RecyclerView.Adapter<VenuesRecycl
 //        holder.mAddView.setChecked(validateLocal(holder.mItem.getId()));
         holder.mAddView.setChecked(validateLocal(holder.mItem.getId()));
 
+        holder.mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mListener!=null)mListener.onListFragmentInteractionGoToVenue(holder.mItem);
+            }
+        });
+
         holder.mAddView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mListener.onListFragmentInteraction(holder.mItem);
+                if(mListener!=null)mListener.onListFragmentInteractionSaveValue(holder.mItem);
             }
         });
 
@@ -77,10 +84,12 @@ public class VenuesRecyclerViewAdapter extends RecyclerView.Adapter<VenuesRecycl
         private final TextView mNameView;
         private final TextView mAddressView;
         private final CheckBox mAddView;
+        private final View mView;
         private Venue mItem;
 
         private ViewHolder(View view) {
             super(view);
+            mView = view;
             mNameView = view.findViewById(R.id.name);
             mAddressView = view.findViewById(R.id.address);
             mAddView = view.findViewById(R.id.tbAdd);
@@ -94,6 +103,8 @@ public class VenuesRecyclerViewAdapter extends RecyclerView.Adapter<VenuesRecycl
 
     public interface OnListFragmentInteractionListener {
 
-        void onListFragmentInteraction(Venue item);
+        void onListFragmentInteractionSaveValue(Venue item);
+
+        void onListFragmentInteractionGoToVenue(Venue item);
     }
 }

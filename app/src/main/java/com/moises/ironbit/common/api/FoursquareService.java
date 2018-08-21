@@ -2,8 +2,10 @@ package com.moises.ironbit.common.api;
 
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import com.moises.ironbit.common.model.FoursquareRequest;
-import com.moises.ironbit.common.model.FoursquareResponse;
+import com.moises.ironbit.common.model.venue.FoursquareVenueRequest;
+import com.moises.ironbit.common.model.venue.FoursquareVenueResponse;
+import com.moises.ironbit.common.model.venues.FoursquareRequest;
+import com.moises.ironbit.common.model.venues.FoursquareResponse;
 
 import java.util.concurrent.TimeUnit;
 
@@ -71,10 +73,12 @@ public class FoursquareService {
         return mFoursquareService;
     }
 
+    public Single<FoursquareVenueResponse> venueById(FoursquareVenueRequest foursquareRequest) {
+        return mFoursquareApi.venueById(foursquareRequest.getId(),CLIENT_ID,CLIENT_SECRET,API_VERSION);
+    }
+
     public Single<FoursquareResponse> venues(FoursquareRequest foursquareRequest) {
         return mFoursquareApi.venues(CLIENT_ID,CLIENT_SECRET,API_VERSION,LIMIT,foursquareRequest.getLatLon(),QUERY);
     }
-
-
 
 }

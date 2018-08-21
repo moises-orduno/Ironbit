@@ -3,6 +3,7 @@ package com.moises.ironbit.di;
 import com.moises.ironbit.lobby.LobbyModule;
 import com.moises.ironbit.lobby.LocalVenuesFragment;
 import com.moises.ironbit.lobby.MainActivity;
+import com.moises.ironbit.lobby.VenueFragment;
 import com.moises.ironbit.lobby.VenuesFragment;
 
 import dagger.Module;
@@ -23,6 +24,9 @@ public abstract class BuildersModule {
 
     @ContributesAndroidInjector(modules = LobbyModule.class)
     abstract LocalVenuesFragment bindLocalVenuesFragment();
+
+    @ContributesAndroidInjector(modules = LobbyModule.class)
+    abstract VenueFragment bindVenueFragment();
 
     // Add bindings for other sub-components here
 }

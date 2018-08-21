@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 
 
+import com.facebook.stetho.Stetho;
 import com.moises.ironbit.di.DaggerAppComponent;
 
 import javax.inject.Inject;
@@ -30,6 +31,7 @@ public class App extends Application implements HasActivityInjector {
                 .application(this)
                 .build()
                 .inject(this);
+        Stetho.initializeWithDefaults(this);
     }
 
     @Override

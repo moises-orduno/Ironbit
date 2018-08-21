@@ -5,7 +5,8 @@ import android.arch.lifecycle.ViewModel;
 
 import com.moises.ironbit.common.domain.interactors.LoadCommonVenueUseCase;
 import com.moises.ironbit.common.domain.interactors.LoadVenueUseCase;
-import com.moises.ironbit.common.model.FoursquareRequest;
+import com.moises.ironbit.common.model.venue.FoursquareVenueRequest;
+import com.moises.ironbit.common.model.venues.FoursquareRequest;
 import com.moises.ironbit.common.viewmodel.Response;
 import com.moises.ironbit.rx.SchedulersFacade;
 
@@ -24,9 +25,9 @@ public class VenueViewModel extends ViewModel {
     public VenueViewModel() {
     }
 
-    public VenueViewModel(LoadCommonVenueUseCase loadCommonGreetingUseCase,
+    public VenueViewModel(LoadCommonVenueUseCase loadCommonVenueUseCase,
                           SchedulersFacade schedulersFacade) {
-        this.loadCommonGreetingUseCase = loadCommonGreetingUseCase;
+        this.loadCommonGreetingUseCase = loadCommonVenueUseCase;
         this.schedulersFacade = schedulersFacade;
     }
 
@@ -49,7 +50,23 @@ public class VenueViewModel extends ViewModel {
                 .observeOn(schedulersFacade.ui())
                 .doOnSubscribe(__ -> response.setValue(Response.loading()))
                 .subscribe(
-                        greeting -> response.setValue(Response.success(greeting)),
+                        foursquareResponse -> response.setValue(Response.success(foursquareResponse)),
+                        throwable -> response.setValue(Response.error(throwable))
+                )
+        );
+    }
+
+    public void loadVenueById(String id) {
+        loadVenueById(loadCommonGreetingUseCase,id);
+    }
+
+    private void loadVenueById(LoadVenueUseCase loadVenueUseCase,String id) {
+        disposables.add(loadVenueUseCase.executeById(new FoursquareVenueRequest(id))
+                .subscribeOn(schedulersFacade.io())
+                .observeOn(schedulersFacade.ui())
+                .doOnSubscribe(__ -> response.setValue(Response.loading()))
+                .subscribe(
+                        foursquareResponse -> response.setValue(Response.success(foursquareResponse)),
                         throwable -> response.setValue(Response.error(throwable))
                 )
         );

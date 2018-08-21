@@ -15,6 +15,7 @@ import android.view.MenuItem;
 
 
 import com.moises.ironbit.R;
+import com.moises.ironbit.common.model.venues.Venue;
 
 import javax.inject.Inject;
 
@@ -23,7 +24,7 @@ import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 
-public class MainActivity extends AppCompatActivity implements HasSupportFragmentInjector {
+public class MainActivity extends AppCompatActivity implements HasSupportFragmentInjector, VenuesFragment.OnListFragmentInteractionListener {
 
     @Inject
     DispatchingAndroidInjector<Fragment> fragmentDispatchingAndroidInjector;
@@ -103,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
             }
             return false;
         } else {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_layout,new VenuesFragment(), VenuesFragment.TAG).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_layout,VenuesFragment.newInstance(this), VenuesFragment.TAG).commit();
 
             return true;
         }
@@ -123,7 +124,8 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
                     if (ContextCompat.checkSelfPermission(this,
                             Manifest.permission.ACCESS_FINE_LOCATION)
                             == PackageManager.PERMISSION_GRANTED) {
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_layout,new VenuesFragment(), VenuesFragment.TAG).commit();
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_layout,VenuesFragment.newInstance(this), VenuesFragment.TAG).commit();
 
 
                     }
@@ -140,4 +142,12 @@ public class MainActivity extends AppCompatActivity implements HasSupportFragmen
         }
     }
 
+    @Override
+    public void onListFragmentInteractionGoToVenue(Venue item) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_layout,VenueFragment.newInstance(item.getId()), VenueFragment.TAG)
+                .addToBackStack(VenueFragment.TAG)
+                .commit();
+
+    }
 }
